@@ -1,14 +1,14 @@
 library(dplyr)
 
 # Extract column names from features list
-header <- scan(paste(getwd(), "/coursera/data_cleaning/UCI HAR Dataset/features.txt", sep = ""), what = "", sep = "\n")
+header <- scan(paste(getwd(), "/UCI HAR Dataset/features.txt", sep = ""), what = "", sep = "\n")
 
 # Extract training data, activities, and IDS
-train_data <- read.table(paste(getwd(),"/coursera/data_cleaning/UCI HAR Dataset/train/X_train.txt", sep = ""), header = FALSE, fill = TRUE)
+train_data <- read.table(paste(getwd(),"/UCI HAR Dataset/train/X_train.txt", sep = ""), header = FALSE, fill = TRUE)
 
-train_act <- read.table(paste(getwd(),"/coursera/data_cleaning/UCI HAR Dataset/train/y_train.txt", sep = ""), header = FALSE, fill = TRUE)
+train_act <- read.table(paste(getwd(),"/UCI HAR Dataset/train/y_train.txt", sep = ""), header = FALSE, fill = TRUE)
 
-train_IDS <- read.table(paste(getwd(), "/coursera/data_cleaning/UCI HAR Dataset/train/subject_train.txt", sep = ""), header = FALSE)
+train_IDS <- read.table(paste(getwd(), "/UCI HAR Dataset/train/subject_train.txt", sep = ""), header = FALSE)
 
 # Add train label to IDs to differentiate from test data
 train_IDS <- sapply(train_IDS, paste0, "_train")
@@ -19,11 +19,11 @@ col_names <- c("id", "activity", header)
 colnames(train) <- col_names
 
 # Extract test data, activities, and IDs
-test_data <- read.table(paste(getwd(),"/coursera/data_cleaning/UCI HAR Dataset/test/X_test.txt", sep = ""), header = FALSE, fill = TRUE)
+test_data <- read.table(paste(getwd(),"/UCI HAR Dataset/test/X_test.txt", sep = ""), header = FALSE, fill = TRUE)
 
-test_act <- read.table(paste(getwd(),"/coursera/data_cleaning/UCI HAR Dataset/test/y_test.txt", sep = ""), header = FALSE, fill = TRUE)
+test_act <- read.table(paste(getwd(),"/UCI HAR Dataset/test/y_test.txt", sep = ""), header = FALSE, fill = TRUE)
 
-test_IDS <- read.table(paste(getwd(), "/coursera/data_cleaning/UCI HAR Dataset/test/subject_test.txt", sep = ""), header = FALSE)
+test_IDS <- read.table(paste(getwd(), "/UCI HAR Dataset/test/subject_test.txt", sep = ""), header = FALSE)
 
 # Add train label to IDs to differentiate from test data
 test_IDS <- sapply(test_IDS, paste0, "_test")
@@ -44,7 +44,7 @@ df_small <- df[, keep]
 
 # Use descriptive activity names to name the activities in the data set
 
-act_labels <- read.table(paste(getwd(),"/coursera/data_cleaning/UCI HAR Dataset/activity_labels.txt", sep = ""), header = FALSE, fill = TRUE)
+act_labels <- read.table(paste(getwd(),"/UCI HAR Dataset/activity_labels.txt", sep = ""), header = FALSE, fill = TRUE)
 colnames(act_labels) <- c("activity", "act_name")
 
 df_act <- merge(df_small, act_labels, by= "activity")
@@ -82,3 +82,5 @@ df_tidy <- df_act %>% group_by(id, activity) %>% summarize_each(funs(mean))
 colnames(df_tidy) <- paste("mean", colnames(df_tidy), sep = "_")
 colnames(df_tidy)[1] <- "id"
 colnames(df_tidy)[2] <- "activity"
+
+write.table(df_tidy, file = "project_data.txt", row.name = FALSE)
